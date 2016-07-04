@@ -1,0 +1,11 @@
+#! /bin/bash
+{% for (patient, status, tumour_content) in meta_combinations %}
+PyClone build_mutations_file {{patient}}_{{status}}.pyclone {{patient}}_{{status}}.pyclone.yaml --var_prior total_copy_number
+{% endfor %}
+mkdir cellular_frequencies
+PyClone analyse {{patient}}.config.yaml 
+PyClone cluster {{patient}}.config.yaml {{patient}}.cluster.tsv --burnin 1000
+PyClone  plot_similarity_matrix {{patient}}.config.yaml {{patient}}.silimarity_matrix.pdf --burnin 1000
+PyClone  plot_cellular_frequencies {{patient}}.config.yaml cellular_frequencies --burnin 1000
+PyClone  plot_multi_sample {{patient}}.config.yaml {{patient}}.multi_sample.pdf --separate_lines
+echo "job finished successfully at:" `date` 
